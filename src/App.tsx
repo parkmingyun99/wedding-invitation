@@ -11,6 +11,13 @@ const photos = [
 
 function App() {
   const [daysLeft, setDaysLeft] = useState(0);
+  const [copiedAccount, setCopiedAccount] = useState('');
+
+  const copyAccount = async (account: string, owner: string) => {
+    await navigator.clipboard.writeText(account);
+    setCopiedAccount(owner);
+    window.setTimeout(() => setCopiedAccount(''), 1800);
+  };
 
   useEffect(() => {
     const weddingDay = new Date('2027-01-17T13:00:00+09:00');
@@ -80,6 +87,21 @@ function App() {
         <div className="map-card"><div className="map-lines" /><span>HOUSE OF THE RAUM<br /><b>VELLUS HALL</b></span></div>
         <p className="address">서울특별시 광진구 능동로 81, B1<br /><small>02-6457-8100 · 건대입구역 5번 출구</small></p>
         <a className="map-link" href="https://houseoftheraum.co.kr/location/" target="_blank" rel="noreferrer">장소 안내 보기 <span>↗</span></a>
+        <div className="account-area">
+          <p className="account-title">마음 전하실 곳</p>
+          <div className="account-list">
+            <div className="account-row">
+              <span><b>신랑</b> 박민균<br /><small>국민은행</small></span>
+              <strong>024802-04-248253</strong>
+              <button type="button" onClick={() => copyAccount('024802-04-248253', 'groom')}>{copiedAccount === 'groom' ? '복사됨' : '복사'}</button>
+            </div>
+            <div className="account-row">
+              <span><b>신부</b> 김희연<br /><small>농협은행</small></span>
+              <strong>111111-11-111111</strong>
+              <button type="button" onClick={() => copyAccount('111111-11-111111', 'bride')}>{copiedAccount === 'bride' ? '복사됨' : '복사'}</button>
+            </div>
+          </div>
+        </div>
       </section>
 
       <footer className="footer"><p className="script">See you there</p><p>MIN GYUN &amp; HEE YEON</p><small>17 · 01 · 2027</small></footer>

@@ -14,12 +14,8 @@ const venueMapImageUrl = 'https://houseoftheraum.co.kr/wp-content/uploads/images
 const naverVenueUrl = 'https://naver.me/GbDMwi5B';
 const directions = [
   ['지하철', '2호선 · 7호선 건대입구역 5번 출구'],
-  ['간선버스', '240'],
-  ['지선버스', '2222 · 2224'],
-  ['직행버스', '3500'],
-  ['공항버스', '6013'],
-  ['마을버스', '광진05'],
-  ['자동차', '내비게이션에 “하우스 오브 더 라움” 입력 · 건물 내 지하 주차장'],
+  ['버스', '240 · 2222 · 2224 · 3500 · 6013 · 광진05'],
+  ['자동차', '“하우스 오브 더 라움” 검색 · 건물 내 지하 주차장'],
 ];
 
 function App() {

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const photos = [
   '원본-1.jpg', '원본-110.jpg', '원본-173.jpg', '원본-188.jpg',
@@ -12,11 +12,24 @@ const naverVenueUrl = 'https://naver.me/GbDMwi5B';
 function App() {
   const [daysLeft, setDaysLeft] = useState(0);
   const [copiedAccount, setCopiedAccount] = useState('');
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   const copyAccount = async (account: string, owner: string) => {
     await navigator.clipboard.writeText(account);
     setCopiedAccount(owner);
     window.setTimeout(() => setCopiedAccount(''), 1800);
+  };
+
+  const toggleMusic = async () => {
+    if (!audioRef.current) return;
+    if (audioRef.current.paused) {
+      await audioRef.current.play();
+      setIsPlaying(true);
+    } else {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    }
   };
 
   useEffect(() => {
@@ -38,10 +51,11 @@ function App() {
 
   return (
     <main className="invitation">
+      <audio ref={audioRef} src={`${import.meta.env.BASE_URL}MUSIC.mp3`} loop />
       <section className="opening">
         <img className="opening-image" src={`${import.meta.env.BASE_URL}${photos[0]}`} alt="박민균과 김희연" />
         <div className="opening-wash" />
-        <div className="opening-top"><span>OUR WEDDING</span><span>17 / 01 / 2027</span></div>
+        <div className="opening-top"><span>OUR WEDDING</span><span>17 / 01 / 2027</span><button className={`music-button ${isPlaying ? 'is-playing' : ''}`} type="button" onClick={toggleMusic} aria-label={isPlaying ? '배경음악 일시정지' : '배경음악 재생'}><i /><i /><i /><em>{isPlaying ? 'SOUND ON' : 'SOUND OFF'}</em></button></div>
         <div className="opening-copy">
           <p className="eyebrow">A LITTLE FOREVER</p>
           <h1>Min Gyun<br /><i>&amp;</i> Hee Yeon</h1>

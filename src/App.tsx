@@ -9,6 +9,9 @@ const photos = [
   '원본-95.jpg', '원본-957.jpg',
 ];
 
+const venueImageUrl = 'https://houseoftheraum.co.kr/wp-content/uploads/2025/08/%ED%99%88%ED%8E%98%EC%9D%B4%EC%A7%80_%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C_%EA%B0%80%EB%A1%9C29.jpg';
+const venueLocationUrl = 'https://houseoftheraum.co.kr/location/';
+
 function App() {
   const [daysLeft, setDaysLeft] = useState(0);
   const [copiedAccount, setCopiedAccount] = useState('');
@@ -55,11 +58,11 @@ function App() {
         <p className="script">With all our hearts</p>
         <h2>서로의 계절이 되어<br />함께 걷고 싶습니다.</h2>
         <p className="body-copy">처음 만난 순간부터 지금까지,<br />우리의 모든 장면을 사랑으로 기억합니다.<br />소중한 분들을 모시고 새로운 시작을 약속하려 합니다.</p>
-        <div className="names"><span>박민균</span><i>그리고</i><span>김희연</span></div>
+        <div className="names"><span>주효정의 아들<br /><b>박민균</b></span><i>그리고</i><span>김정호 이상숙의 딸<br /><b>김희연</b></span></div>
       </section>
 
       <section className="feature-photo reveal">
-        <img src={`${import.meta.env.BASE_URL}원본-110.jpg`} alt="신랑 신부의 자연스러운 순간" />
+        <img src={venueImageUrl} alt="하우스 오브 더 라움" />
         <div className="photo-caption"><span>OUR<br />DAY</span><strong>02</strong></div>
       </section>
 
@@ -84,9 +87,10 @@ function App() {
         <p className="section-index">04 / JOIN US</p>
         <h2>우리 결혼식에<br /><em>놀러 오세요.</em></h2>
         <p className="body-copy">2027년 1월 17일 일요일<br />오후 1시, 하우스 오브 더 라움 벨루스홀</p>
-        <div className="map-card"><div className="map-lines" /><span>HOUSE OF THE RAUM<br /><b>VELLUS HALL</b></span></div>
+        <div className="map-frame">
+          <iframe src={venueLocationUrl} title="하우스 오브 더 라움 약도" loading="lazy" />
+        </div>
         <p className="address">서울특별시 광진구 능동로 81, B1<br /><small>02-6457-8100 · 건대입구역 5번 출구</small></p>
-        <a className="map-link" href="https://houseoftheraum.co.kr/location/" target="_blank" rel="noreferrer">장소 안내 보기 <span>↗</span></a>
         <div className="account-area">
           <p className="account-title">마음 전하실 곳</p>
           <div className="account-list">
@@ -96,9 +100,9 @@ function App() {
               <button type="button" onClick={() => copyAccount('024802-04-248253', 'groom')}>{copiedAccount === 'groom' ? '복사됨' : '복사'}</button>
             </div>
             <div className="account-row">
-              <span><b>신부</b> 김희연<br /><small>농협은행</small></span>
-              <strong>111111-11-111111</strong>
-              <button type="button" onClick={() => copyAccount('111111-11-111111', 'bride')}>{copiedAccount === 'bride' ? '복사됨' : '복사'}</button>
+              <span><b>신부</b> 김희연<br /><small>신한은행</small></span>
+              <strong>110-536-892857</strong>
+              <button type="button" onClick={() => copyAccount('110-536-892857', 'bride')}>{copiedAccount === 'bride' ? '복사됨' : '복사'}</button>
             </div>
           </div>
         </div>

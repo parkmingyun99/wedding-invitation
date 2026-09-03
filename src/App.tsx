@@ -5,7 +5,6 @@ const photos = [
   '원본-195.jpg', '원본-24.jpg', '원본-375.jpg', '원본-495.jpg',
   '원본-530.jpg', '원본-536.jpg', '원본-587.jpg', '원본-601.jpg',
 ];
-const venueImageUrl = 'https://houseoftheraum.co.kr/wp-content/uploads/2025/08/%ED%99%88%ED%8E%98%EC%9D%B4%EC%A7%80_%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C_%EA%B0%80%EB%A1%9C29.jpg';
 const venueMapImageUrl = 'https://houseoftheraum.co.kr/wp-content/uploads/images/house_of_the_raum_map.jpg';
 const naverVenueUrl = 'https://naver.me/GbDMwi5B';
 
@@ -86,11 +85,6 @@ function App() {
         <h2>서로의 계절이 되어<br />함께 걷고 싶습니다.</h2>
         <p className="body-copy">처음 만난 순간부터 지금까지,<br />우리의 모든 장면을 사랑으로 기억합니다.<br />소중한 분들을 모시고 새로운 시작을 약속합니다.</p>
         <div className="couple-names"><span>주효정의 아들<br /><strong>박민균</strong></span><i>그리고</i><span>김정호 이상숙의 딸<br /><strong>김희연</strong></span></div>
-      </section>
-
-      <section className="portrait reveal">
-        <img src={venueImageUrl} alt="하우스 오브 더 라움" />
-        <div className="portrait-label"><span>THE PLACE<br />WE BEGIN</span><strong>02</strong></div>
       </section>
 
       <section className="date-section reveal">

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const photos = [
   '원본-1.jpg', '원본-110.jpg', '원본-173.jpg', '원본-188.jpg',
@@ -10,11 +10,35 @@ const photos = [
 ];
 
 const venueImageUrl = 'https://houseoftheraum.co.kr/wp-content/uploads/2025/08/%ED%99%88%ED%8E%98%EC%9D%B4%EC%A7%80_%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C_%EA%B0%80%EB%A1%9C29.jpg';
-const venueLocationUrl = 'https://houseoftheraum.co.kr/location/';
+const naverMapsScriptUrl = 'https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=hm4cjrp9si';
+
+interface NaverLatLng {
+  latitude: number;
+  longitude: number;
+}
+
+interface NaverMap {
+  setCenter: (center: NaverLatLng) => void;
+}
+
+interface NaverMaps {
+  Map: new (element: HTMLElement, options: { center: NaverLatLng; zoom: number; zoomControl: boolean; zoomControlOptions: { position: number; style: number } }) => NaverMap;
+  LatLng: new (latitude: number, longitude: number) => NaverLatLng;
+  Marker: new (options: { position: NaverLatLng; map: NaverMap }) => unknown;
+  Position: { TOP_RIGHT: number };
+  ZoomControlStyle: { SMALL: number };
+}
+
+declare global {
+  interface Window {
+    naver?: { maps: NaverMaps };
+  }
+}
 
 function App() {
   const [daysLeft, setDaysLeft] = useState(0);
   const [copiedAccount, setCopiedAccount] = useState('');
+  const mapRef = useRef<HTMLDivElement>(null);
 
   const copyAccount = async (account: string, owner: string) => {
     await navigator.clipboard.writeText(account);
@@ -27,6 +51,29 @@ function App() {
     const updateCountdown = () => setDaysLeft(Math.max(0, Math.ceil((weddingDay.getTime() - Date.now()) / 86400000)));
     updateCountdown();
     const countdown = window.setInterval(updateCountdown, 3600000);
+    const initializeMap = () => {
+      if (!mapRef.current || !window.naver) return;
+      const center = new window.naver.maps.LatLng(37.5386812, 127.069792);
+      const map = new window.naver.maps.Map(mapRef.current, {
+        center,
+        zoom: 17,
+        zoomControl: true,
+        zoomControlOptions: {
+          position: window.naver.maps.Position.TOP_RIGHT,
+          style: window.naver.maps.ZoomControlStyle.SMALL,
+        },
+      });
+      new window.naver.maps.Marker({ position: center, map });
+    };
+    const existingScript = document.querySelector(`script[src="${naverMapsScriptUrl}"]`);
+    if (existingScript) initializeMap();
+    else {
+      const script = document.createElement('script');
+      script.src = naverMapsScriptUrl;
+      script.async = true;
+      script.onload = initializeMap;
+      document.head.appendChild(script);
+    }
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) entry.target.classList.add('is-visible');
@@ -87,9 +134,7 @@ function App() {
         <p className="section-index">04 / JOIN US</p>
         <h2>우리 결혼식에<br /><em>놀러 오세요.</em></h2>
         <p className="body-copy">2027년 1월 17일 일요일<br />오후 1시, 하우스 오브 더 라움 벨루스홀</p>
-        <div className="map-frame">
-          <iframe src={venueLocationUrl} title="하우스 오브 더 라움 약도" loading="lazy" />
-        </div>
+        <div ref={mapRef} className="map-frame" role="img" aria-label="하우스 오브 더 라움 위치 지도" />
         <p className="address">서울특별시 광진구 능동로 81, B1<br /><small>02-6457-8100 · 건대입구역 5번 출구</small></p>
         <div className="account-area">
           <p className="account-title">마음 전하실 곳</p>

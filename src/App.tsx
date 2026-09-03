@@ -12,6 +12,15 @@ const photos = [
 const venueImageUrl = 'https://houseoftheraum.co.kr/wp-content/uploads/2025/08/%ED%99%88%ED%8E%98%EC%9D%B4%EC%A7%80_%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%93%9C_%EA%B0%80%EB%A1%9C29.jpg';
 const venueMapImageUrl = 'https://houseoftheraum.co.kr/wp-content/uploads/images/house_of_the_raum_map.jpg';
 const naverVenueUrl = 'https://naver.me/GbDMwi5B';
+const directions = [
+  ['지하철', '2호선 · 7호선 건대입구역 5번 출구'],
+  ['간선버스', '240'],
+  ['지선버스', '2222 · 2224'],
+  ['직행버스', '3500'],
+  ['공항버스', '6013'],
+  ['마을버스', '광진05'],
+  ['자동차', '내비게이션에 “하우스 오브 더 라움” 입력 · 건물 내 지하 주차장'],
+];
 
 function App() {
   const [daysLeft, setDaysLeft] = useState(0);
@@ -93,6 +102,12 @@ function App() {
           <span className="map-overlay">네이버 지도에서 보기 <b>↗</b></span>
         </a>
         <p className="address">서울특별시 광진구 능동로 81, B1<br /><small>02-6457-8100 · 건대입구역 5번 출구</small></p>
+        <div className="directions">
+          <p className="directions-title">Getting there</p>
+          {directions.map(([type, detail]) => (
+            <div className="direction-row" key={type}><b>{type}</b><span>{detail}</span></div>
+          ))}
+        </div>
         <div className="account-area">
           <p className="account-title">마음 전하실 곳</p>
           <div className="account-list">
@@ -105,6 +120,16 @@ function App() {
               <span><b>신부</b> 김희연<br /><small>신한은행</small></span>
               <strong>110-536-892857</strong>
               <button type="button" onClick={() => copyAccount('110-536-892857', 'bride')}>{copiedAccount === 'bride' ? '복사됨' : '복사'}</button>
+            </div>
+            <div className="account-row">
+              <span><b>혼주</b> 주효정<br /><small>신랑측</small></span>
+              <strong>0000</strong>
+              <button type="button" onClick={() => copyAccount('0000', 'groom-parent')}>{copiedAccount === 'groom-parent' ? '복사됨' : '복사'}</button>
+            </div>
+            <div className="account-row">
+              <span><b>혼주</b> 김정호 · 이상숙<br /><small>신부측</small></span>
+              <strong>0000</strong>
+              <button type="button" onClick={() => copyAccount('0000', 'bride-parent')}>{copiedAccount === 'bride-parent' ? '복사됨' : '복사'}</button>
             </div>
           </div>
         </div>

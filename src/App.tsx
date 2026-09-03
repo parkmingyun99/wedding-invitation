@@ -10,7 +10,7 @@ const venueMapImageUrl = 'https://houseoftheraum.co.kr/wp-content/uploads/images
 const naverVenueUrl = 'https://naver.me/GbDMwi5B';
 
 function App() {
-  const [daysLeft, setDaysLeft] = useState(0);
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [copiedAccount, setCopiedAccount] = useState('');
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -34,9 +34,24 @@ function App() {
 
   useEffect(() => {
     const weddingDay = new Date('2027-01-17T13:00:00+09:00');
-    const updateCountdown = () => setDaysLeft(Math.max(0, Math.ceil((weddingDay.getTime() - Date.now()) / 86400000)));
+    const updateCountdown = () => {
+      const remaining = Math.max(0, weddingDay.getTime() - Date.now());
+      const totalSeconds = Math.floor(remaining / 1000);
+      setTimeLeft({
+        days: Math.floor(totalSeconds / 86400),
+        hours: Math.floor((totalSeconds % 86400) / 3600),
+        minutes: Math.floor((totalSeconds % 3600) / 60),
+        seconds: totalSeconds % 60,
+      });
+    };
     updateCountdown();
-    const countdown = window.setInterval(updateCountdown, 3600000);
+    const countdown = window.setInterval(updateCountdown, 1000);
+    const startMusic = () => {
+      if (!audioRef.current || !audioRef.current.paused) return;
+      audioRef.current.play().then(() => setIsPlaying(true)).catch(() => undefined);
+    };
+    startMusic();
+    document.addEventListener('pointerdown', startMusic, { once: true });
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) entry.target.classList.add('is-visible');
@@ -45,6 +60,7 @@ function App() {
     document.querySelectorAll('.reveal').forEach((element) => observer.observe(element));
     return () => {
       window.clearInterval(countdown);
+      document.removeEventListener('pointerdown', startMusic);
       observer.disconnect();
     };
   }, []);
@@ -81,7 +97,15 @@ function App() {
         <p className="eyebrow">02 / SAVE THE DATE</p>
         <div className="date-display"><span>JAN<br /><b>2027</b></span><strong>17</strong><span>SUN<br /><b>1:00 PM</b></span></div>
         <p className="venue-name">하우스 오브 더 라움<br /><em>벨루스홀</em></p>
-        <div className="countdown"><strong>{daysLeft}</strong><span>DAYS UNTIL WE SAY<br />“I DO”</span></div>
+        <div className="countdown" aria-label="결혼식까지 남은 시간">
+          <div><strong>{String(timeLeft.days).padStart(3, '0')}</strong><small>DAY</small></div>
+          <b>:</b>
+          <div><strong>{String(timeLeft.hours).padStart(2, '0')}</strong><small>HOUR</small></div>
+          <b>:</b>
+          <div><strong>{String(timeLeft.minutes).padStart(2, '0')}</strong><small>MIN</small></div>
+          <b>:</b>
+          <div><strong>{String(timeLeft.seconds).padStart(2, '0')}</strong><small>SEC</small></div>
+        </div>
       </section>
 
       <section className="gallery reveal">

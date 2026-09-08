@@ -8,6 +8,8 @@ const days = Array.from({ length: 31 }, (_, index) => index + 1);
 function App() {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [copiedAccount, setCopiedAccount] = useState('');
+  const [accountSide, setAccountSide] = useState<'groom' | 'bride' | null>(null);
+  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -44,7 +46,13 @@ function App() {
     const startMusic = () => audioRef.current?.play().then(() => setIsPlaying(true)).catch(() => undefined);
     startMusic();
     document.addEventListener('pointerdown', startMusic, { once: true });
-    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add('is-visible')), { threshold: 0.14 });
+    const observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
+      if (entry.target.classList.contains('replay-reveal')) {
+        entry.target.classList.toggle('is-visible', entry.isIntersecting);
+      } else if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+      }
+    }), { rootMargin: '0px 0px -10% 0px', threshold: 0.25 });
     document.querySelectorAll('.reveal').forEach((element) => observer.observe(element));
     return () => {
       window.clearInterval(countdown);
@@ -53,22 +61,39 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    const closeOnEscape = (event: KeyboardEvent) => event.key === 'Escape' && setSelectedPhoto(null);
+    document.addEventListener('keydown', closeOnEscape);
+    return () => document.removeEventListener('keydown', closeOnEscape);
+  }, []);
+
   return (
     <main className="invitation">
       <audio ref={audioRef} src={`${import.meta.env.BASE_URL}MUSIC.mp3`} loop />
       <section className="screen opening">
         <img className="opening-image" src={`${import.meta.env.BASE_URL}${photos[0]}`} alt="박민균과 김희연" />
         <div className="opening-wash" />
-        <div className="petals" aria-hidden="true">{Array.from({ length: 18 }, (_, index) => <i key={index} />)}</div>
+        <div className="petals" aria-hidden="true">{Array.from({ length: 27 }, (_, index) => <i key={index} />)}</div>
         <button className={`music-button ${isPlaying ? 'is-playing' : ''}`} type="button" onClick={toggleMusic} aria-label="배경음악 재생"><i /><i /><i /></button>
-        <h1>Min Gyun <em>&amp;</em> Hee Yeon</h1>
+        <h1>Min Gyun <em className="ampersand">&amp;</em> Hee Yeon</h1>
+        <div className="opening-details">
+          <p>2027년 1월 17일 일요일 오후 13시</p>
+          <p>하우스 오브 더 라움 벨루스홀</p>
+        </div>
       </section>
 
       <section className="screen story reveal">
         <p className="eyebrow">OUR STORY</p><p className="hand">With all our hearts</p>
         <h2>서로의 계절이 되어<br />함께 걷고 싶습니다.</h2>
         <p className="body-copy">처음 만난 순간부터 지금까지,<br />우리의 모든 장면을 사랑으로 기억합니다.<br />소중한 분들을 모시고 새로운 시작을 약속합니다.</p>
-        <div className="couple-names"><span>주효정의 아들<br /><b>박민균</b></span><i>그리고</i><span>김정호 이상숙의 딸<br /><b>김희연</b></span></div>
+        <div className="couple-names"><span>주효정의 아들<br /><b>박민균</b></span><i>그리고</i><span>김정호 · 이상숙의 딸<br /><b>김희연</b></span></div>
+      </section>
+
+      <section className="date-intro reveal replay-reveal" aria-label="예식 날짜">
+        <div className="date-intro-content">
+          <span className="date-line date-month">JAN 17</span>
+          <span className="date-line date-year">2027</span>
+        </div>
       </section>
 
       <section className="screen wedding-day reveal">
@@ -84,14 +109,14 @@ function App() {
 
       <section className="screen contact reveal"><p className="eyebrow">CONGRATULATIONS</p><h2>축하의 마음을<br /><i>전해주세요.</i></h2><p className="body-copy">두 사람의 새로운 시작을<br />따뜻한 마음으로 축복해주세요.</p><a href="tel:01000000000">축하 연락하기 <span>↗</span></a></section>
 
-      <section className="screen couple reveal"><p className="eyebrow">ABOUT US</p><h2>우리 커플을<br /><i>소개합니다.</i></h2><div className="couple-cards"><article><img src={`${import.meta.env.BASE_URL}${photos[5]}`} alt="신랑 박민균" /><b>신랑 · 박민균</b><p>주효정의 아들<br />다정한 마음으로 오늘을 준비했습니다.</p></article><article><img src={`${import.meta.env.BASE_URL}${photos[6]}`} alt="신부 김희연" /><b>신부 · 김희연</b><p>김정호 이상숙의 딸<br />함께라서 더 따뜻한 내일을 꿈꿉니다.</p></article></div></section>
+      <section className="screen couple reveal"><p className="eyebrow">ABOUT US</p><h2>우리 커플을<br /><i>소개합니다.</i></h2><div className="couple-cards"><article><img src={`${import.meta.env.BASE_URL}${photos[5]}`} alt="신랑 박민균" /><b>신랑 · 박민균</b><p>주효정의 아들<br />다정한 마음으로 오늘을 준비했습니다.</p></article><article><img src={`${import.meta.env.BASE_URL}${photos[6]}`} alt="신부 김희연" /><b>신부 · 김희연</b><p>김정호 · 이상숙의 딸<br />함께라서 더 따뜻한 내일을 꿈꿉니다.</p></article></div></section>
 
-      <section className="screen gallery reveal"><p className="eyebrow">OUR MOMENTS</p><h2>우리의<br /><i>photographs</i></h2><div className="gallery-grid">{photos.slice(1).map((photo, index) => <img key={photo} className={`gallery-photo photo-${index + 1}`} src={`${import.meta.env.BASE_URL}${photo}`} alt={`우리의 사진 ${index + 1}`} loading="lazy" />)}</div></section>
+      <section className="screen gallery reveal"><h2>GALLERY</h2><p className="gallery-hint">사진을 클릭하시면 전체 화면 보기가 가능합니다</p><div className="gallery-grid">{photos.slice(1).map((photo, index) => <button className={`gallery-photo-button photo-${index + 1}`} type="button" key={photo} onClick={() => setSelectedPhoto(photo)} aria-label={`사진 ${index + 1} 크게 보기`}><img className="gallery-photo" src={`${import.meta.env.BASE_URL}${photo}`} alt={`우리의 사진 ${index + 1}`} loading="lazy" /></button>)}</div></section>
 
-      <section className="screen location reveal"><p className="eyebrow">LOCATION</p><h2>우리 결혼식에<br /><i>놀러 오세요.</i></h2><p className="body-copy">서울특별시 광진구 능동로 81, B1<br />하우스 오브 더 라움 벨루스홀</p><a className="map-card" href={naverVenueUrl} target="_blank" rel="noreferrer"><img src={venueMapImageUrl} alt="하우스 오브 더 라움 약도" /><span>네이버 지도에서 길찾기 ↗</span></a><div className="directions"><div><b>지하철</b><span>2호선 · 7호선 건대입구역 5번 출구</span></div><div><b>버스</b><span>240 · 2222 · 2224 · 3500 · 6013 · 광진05</span></div><div><b>자동차</b><span>“하우스 오브 더 라움” 검색 · 건물 내 지하 주차장</span></div></div></section>
+      <section className="screen location reveal"><h2>LOCATION</h2><p className="location-venue">하우스 오브 더 라움 벨루스홀</p><p className="location-address"><span>서울특별시 광진구 능동로 81, B1</span><button type="button" onClick={() => copyAccount('서울특별시 광진구 능동로 81, B1', 'location-address')}>{copiedAccount === 'location-address' ? '복사됨' : '복사'}</button></p><a className="map-card" href={naverVenueUrl} target="_blank" rel="noreferrer"><img src={venueMapImageUrl} alt="하우스 오브 더 라움 약도" /><span>네이버 지도에서 길찾기 ↗</span></a><div className="directions"><div className="direction-group"><h3>자동차</h3><p>내비게이션 : ‘하우스 오브 더 라움’ 검색</p><p>서울특별시 광진구 능동로 81</p></div><div className="direction-group"><h3>버스</h3><p className="bus-route"><b className="bus-badge blue">간선버스</b><span>240</span></p><p className="bus-route"><b className="bus-badge green">지선버스</b><span>2222, 2224</span></p><p className="bus-route"><b className="bus-badge red">직행버스</b><span>3500</span></p><p className="bus-route"><b className="bus-badge sky">공항버스</b><span>6013</span></p><p className="bus-route"><b className="bus-badge lime">마을버스</b><span>광진05</span></p></div><div className="direction-group"><h3>지하철</h3><p className="subway-route"><b className="subway-number line-2">2</b><span>2호선 건대입구역 5번 출구</span></p><p className="subway-route"><b className="subway-number line-7">7</b><span>7호선 건대입구역 5번 출구</span></p></div><div className="direction-group"><h3>주차</h3><p>건물 내 지하 주차장 이용</p><p>예식 참석 시 주차 2시간을 지원합니다.</p></div></div></section>
 
-      <section className="screen accounts reveal"><p className="eyebrow">WITH LOVE</p><h2>마음 전하실<br /><i>곳</i></h2><div className="account-list">{[['신랑', '박민균', '국민은행', '024802-04-248253', 'groom'], ['신부', '김희연', '신한은행', '110-536-892857', 'bride'], ['혼주 · 신랑측', '주효정', '계좌 준비 중', '0000', 'groom-parent'], ['혼주 · 신부측', '김정호 · 이상숙', '계좌 준비 중', '0000', 'bride-parent']].map(([role, name, bank, account, owner]) => <div className="account" key={owner}><span><b>{role}</b> {name}<small>{bank}</small></span><strong>{account}</strong><button type="button" onClick={() => copyAccount(account, owner)}>{copiedAccount === owner ? '복사됨' : '복사'}</button></div>)}</div></section>
-      <footer><p className="hand">See you there</p><span>MIN GYUN &amp; HEE YEON · 17 JAN 2027</span></footer>
+      <section className="screen accounts reveal"><p className="eyebrow">WITH LOVE</p><h2>마음 전하실 <i>곳</i></h2><p className="accounts-description">참석이 어려우신 분들을 위해 기재했습니다<br />너그러운 마음으로 양해 부탁드립니다</p><div className="account-accordions">{[['groom', '신랑측에게', [['신랑', '박민균', '국민은행', '024802-04-248253', 'groom'], ['혼주 · 신랑측', '주효정', '계좌 준비 중', '0000', 'groom-parent']]], ['bride', '신부측에게', [['신부', '김희연', '신한은행', '110-536-892857', 'bride'], ['혼주 · 신부측', '김정호 · 이상숙', '계좌 준비 중', '0000', 'bride-parent']]]].map(([side, label, accounts]) => <div className={`account-accordion ${accountSide === side ? 'open' : ''}`} key={side}><button className="account-accordion-toggle" type="button" onClick={() => setAccountSide(accountSide === side ? null : side as 'groom' | 'bride')} aria-expanded={accountSide === side}><span>{label}</span><i aria-hidden="true" /></button><div className="account-list">{(accounts as string[][]).map(([role, name, bank, account, owner]) => <div className="account" key={owner}><div className="account-info"><span><b>{role}</b> {name}</span><small>{bank}</small><strong>{account}</strong></div><button type="button" onClick={() => copyAccount(account, owner)}>{copiedAccount === owner ? '복사됨' : '복사'}</button></div>)}</div></div>)}</div></section>
+      {selectedPhoto && <div className="lightbox" role="dialog" aria-modal="true" aria-label="사진 전체 화면 보기" onClick={() => setSelectedPhoto(null)}><button className="lightbox-close" type="button" onClick={() => setSelectedPhoto(null)} aria-label="사진 닫기">×</button><img src={`${import.meta.env.BASE_URL}${selectedPhoto}`} alt="선택한 사진" onClick={(event) => event.stopPropagation()} /></div>}
     </main>
   );
 }

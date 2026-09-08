@@ -73,7 +73,7 @@ function App() {
       <section className="screen opening">
         <img className="opening-image" src={`${import.meta.env.BASE_URL}${photos[0]}`} alt="박민균과 김희연" />
         <div className="opening-wash" />
-        <div className="petals" aria-hidden="true">{Array.from({ length: 27 }, (_, index) => <i key={index} />)}</div>
+        <div className="petals" aria-hidden="true">{Array.from({ length: 18 }, (_, index) => <i key={index} />)}</div>
         <button className={`music-button ${isPlaying ? 'is-playing' : ''}`} type="button" onClick={toggleMusic} aria-label="배경음악 재생"><i /><i /><i /></button>
         <h1>Min Gyun <em className="ampersand">&amp;</em> Hee Yeon</h1>
         <div className="opening-details">

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-const photos = ['원본-1.jpg', '원본-110.jpg', '원본-173.jpg', '원본-188.jpg', '원본-195.jpg', '원본-24.jpg', '원본-375.jpg', '원본-495.jpg', '원본-530.jpg', '원본-536.jpg', '원본-601.jpg', '원본-659.jpg', '원본-834.jpg', '원본-87.jpg'];
+const photos = ['보정본-1.jpg', '보정본-2.jpg', '보정본-4.jpg', '보정본-5.jpg', '보정본-6.jpg', '보정본-7.jpg', '보정본-8.jpg', '보정본-9.jpg', '보정본-10.jpg', '원본-188.jpg', '원본-495.jpg'];
 const venueMapImageUrl = 'https://houseoftheraum.co.kr/wp-content/uploads/images/house_of_the_raum_map.jpg';
 const naverVenueUrl = 'https://naver.me/GbDMwi5B';
 const days = Array.from({ length: 31 }, (_, index) => index + 1);

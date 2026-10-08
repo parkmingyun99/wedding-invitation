@@ -10,6 +10,7 @@ function App() {
   const [copiedAccount, setCopiedAccount] = useState('');
   const [accountSide, setAccountSide] = useState<'groom' | 'bride' | null>(null);
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
+  const [showContacts, setShowContacts] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -62,6 +63,15 @@ function App() {
   }, []);
 
   useEffect(() => {
+    if (!showContacts) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setShowContacts(false);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [showContacts]);
+
+  useEffect(() => {
     const closeOnEscape = (event: KeyboardEvent) => event.key === 'Escape' && setSelectedPhoto(null);
     document.addEventListener('keydown', closeOnEscape);
     return () => document.removeEventListener('keydown', closeOnEscape);
@@ -107,7 +117,7 @@ function App() {
         <div className="countdown">{[['days', 'DAYS'], ['hours', 'HOURS'], ['minutes', 'MINUTES'], ['seconds', 'SECONDS']].map(([key, label]) => <div className="time-box" key={key}><strong key={String(timeLeft[key as keyof typeof timeLeft])}>{String(timeLeft[key as keyof typeof timeLeft]).padStart(key === 'days' ? 3 : 2, '0')}</strong><small>{label}</small></div>)}</div>
       </section>
 
-      <section className="screen contact reveal"><p className="eyebrow">CONGRATULATIONS</p><h2>축하의 마음을<br /><i>전해주세요.</i></h2><p className="body-copy">두 사람의 새로운 시작을<br />따뜻한 마음으로 축복해주세요.</p><a href="tel:01000000000">축하 연락하기 <span>↗</span></a></section>
+      <section className="screen contact reveal"><p className="eyebrow">CONGRATULATIONS</p><h2>축하의 마음을<br /><i>전해주세요.</i></h2><p className="body-copy">두 사람의 새로운 시작을<br />따뜻한 마음으로 축복해주세요.</p><button className="contact-open" type="button" onClick={() => setShowContacts(true)}>축하 연락하기 <span>↗</span></button></section>
 
       <section className="screen couple reveal"><p className="eyebrow">ABOUT US</p><h2>우리 커플을<br /><i>소개합니다.</i></h2><div className="couple-cards"><article><img src={`${import.meta.env.BASE_URL}원본-312.jpg`} alt="신랑 박민균" /><b>신랑 · 박민균</b><p>#ISTP #도파민중독자 #죽어야끝남</p></article><article><img src={`${import.meta.env.BASE_URL}원본-269.jpg`} alt="신부 김희연" /><b>신부 · 김희연</b><p>#ENFP #음식한입충 #쿠키커터상어</p></article></div></section>
 
@@ -117,6 +127,7 @@ function App() {
 
       <section className="screen accounts reveal"><p className="eyebrow">WITH LOVE</p><h2>마음 전하실 <i>곳</i></h2><p className="accounts-description">참석이 어려우신 분들을 위해 기재했습니다<br />너그러운 마음으로 양해 부탁드립니다</p><div className="account-accordions">{[['groom', '신랑측에게', [['신랑', '박민균', '국민', '024802-04-248253', 'groom'], ['혼주 · 신랑측', '주효정', '국민', '223-21-0623-371', 'groom-parent']]], ['bride', '신부측에게', [['신부', '김희연', '신한', '110-536-892857', 'bride'], ['혼주 · 신부측', '이상숙', '신한', '110-454-472913', 'bride-mother'], ['혼주 · 신부측', '김정호', '농협', '302-0147-1674-31', 'bride-father']]]].map(([side, label, accounts]) => <div className={`account-accordion ${accountSide === side ? 'open' : ''}`} key={side}><button className="account-accordion-toggle" type="button" onClick={() => setAccountSide(accountSide === side ? null : side as 'groom' | 'bride')} aria-expanded={accountSide === side}><span>{label}</span><i aria-hidden="true" /></button><div className="account-list">{(accounts as string[][]).map(([role, name, bank, account, owner]) => <div className="account" key={owner}><div className="account-info"><span><b>{role}</b> {name}</span><div className="account-meta"><small>{bank}</small><strong>{account}</strong></div></div><button type="button" onClick={() => copyAccount(account, owner)}>{copiedAccount === owner ? '복사됨' : '복사'}</button></div>)}</div></div>)}</div></section>
       {selectedPhoto && <div className="lightbox" role="dialog" aria-modal="true" aria-label="사진 전체 화면 보기" onClick={() => setSelectedPhoto(null)}><button className="lightbox-close" type="button" onClick={() => setSelectedPhoto(null)} aria-label="사진 닫기">×</button><img src={`${import.meta.env.BASE_URL}${selectedPhoto}`} alt="선택한 사진" onClick={(event) => event.stopPropagation()} /></div>}
+      {showContacts && <div className="contact-modal-backdrop" role="presentation" onClick={() => setShowContacts(false)}><section className="contact-modal" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title" onClick={(event) => event.stopPropagation()}><button className="contact-modal-close" type="button" onClick={() => setShowContacts(false)} aria-label="연락처 닫기">×</button><h2 id="contact-modal-title">축하 연락하기</h2><div className="contact-list">{[['신랑 박민균', '010-4049-7404', '01040497404'], ['신부 김희연', '010-2832-3718', '01028323718'], ['신랑측 혼주 주효정', '010-3996-7404', '01039967404'], ['신부측 혼주 이상숙', '010-3472-3718', '01034723718'], ['신부측 혼주 김정호', '010-8840-3718', '01088403718']].map(([name, number, link]) => <div className="contact-row" key={link}><span>{name}</span><a href={`tel:${link}`}>{number}</a></div>)}</div></section></div>}
     </main>
   );
 }

@@ -119,7 +119,7 @@ function App() {
 
       <section className="screen contact reveal"><p className="eyebrow">CONGRATULATIONS</p><h2>축하의 마음을<br /><i>전해주세요.</i></h2><p className="body-copy">두 사람의 새로운 시작을<br />따뜻한 마음으로 축복해주세요.</p><button className="contact-open" type="button" onClick={() => setShowContacts(true)}>축하 연락하기 <span>↗</span></button></section>
 
-      <section className="screen couple reveal"><p className="eyebrow">ABOUT US</p><h2>우리 커플을<br /><i>소개합니다.</i></h2><div className="couple-cards"><article><img src={`${import.meta.env.BASE_URL}원본-312.jpg`} alt="신랑 박민균" /><b>신랑 · 박민균</b><p>#ISTP #도파민중독자 #죽어야끝남</p></article><article><img src={`${import.meta.env.BASE_URL}원본-269.jpg`} alt="신부 김희연" /><b>신부 · 김희연</b><p>#ENFP #음식한입충 #쿠키커터상어</p></article></div></section>
+      <section className="screen couple reveal"><p className="eyebrow">ABOUT US</p><h2>우리 커플을<br /><i>소개합니다.</i></h2><div className="couple-cards"><article><img src={`${import.meta.env.BASE_URL}원본-312.jpg`} alt="신랑 박민균" /><b>신랑 · 박민균</b><p>#ISTP #도파민중독자 #죽어야끝남</p></article><article><img src={`${import.meta.env.BASE_URL}heeyeon.jpg`} alt="신부 김희연" /><b>신부 · 김희연</b><p>#ENFP #음식한입충 #쿠키커터상어</p></article></div></section>
 
       <section className="screen gallery reveal"><h2>GALLERY</h2><p className="gallery-hint">사진을 클릭하시면 전체 화면 보기가 가능합니다</p><div className="gallery-grid">{photos.slice(1).map((photo, index) => <button className={`gallery-photo-button photo-${index + 1}`} type="button" key={photo} onClick={() => setSelectedPhoto(photo)} aria-label={`사진 ${index + 1} 크게 보기`}><img className="gallery-photo" src={`${import.meta.env.BASE_URL}${photo}`} alt={`우리의 사진 ${index + 1}`} loading="lazy" /></button>)}</div></section>
 
